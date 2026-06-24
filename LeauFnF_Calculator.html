@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caloriebehoefte Calculator — Leau Fit en Food</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Calibri", "Segoe UI", Arial, sans-serif;
+    background: #F1F5FB;
+    color: #0A1628;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: #0A1628;
+    padding: 0;
+  }
+  .header-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 28px 32px 24px;
+    border-bottom: 3px solid #F7941D;
+  }
+  .header-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: #F7941D;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .header-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #FFFFFF;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .header-sub {
+    font-size: 14px;
+    color: #94A3B8;
+    font-style: italic;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 32px 32px 64px;
+  }
+
+  /* SECTION BLOCK */
+  .section-header {
+    background: #0A1628;
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 10px 18px;
+    margin: 32px 0 16px;
+  }
+
+  /* CARD */
+  .card {
+    background: #FFFFFF;
+    border: 0.5px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+  }
+
+  /* FORM FIELDS */
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .field-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .field input, .field select {
+    border: 1px solid #CBD5E1;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #0A1628;
+    background: #F8FAFC;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input:focus, .field select:focus {
+    border-color: #F7941D;
+    background: #FFFAF5;
+  }
+
+  /* ACTIVITY BUTTONS */
+  .act-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .act-btn {
+    border: 1.5px solid #E2E8F0;
+    border-radius: 8px;
+    background: #F8FAFC;
+    padding: 10px 4px 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .act-btn:hover { border-color: #F7941D; background: #FFF8F0; }
+  .act-btn.active { border: 2px solid #F7941D; background: #FFF4E8; }
+  .act-num { font-size: 18px; font-weight: 700; color: #F7941D; display: block; }
+  .act-label { font-size: 10px; color: #64748B; margin-top: 2px; display: block; line-height: 1.3; }
+  .act-desc { font-size: 11px; color: #94A3B8; margin-top: 10px; min-height: 32px; line-height: 1.4; }
+
+  /* GOAL BUTTONS */
+  .goal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .goal-btn {
+    border: 1.5px solid #E2E8F0;
+    border-radius: 8px;
+    background: #F8FAFC;
+    padding: 14px 10px;
+    cursor: pointer;
+    text-align: center;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .goal-btn:hover { border-color: #F7941D; background: #FFF8F0; }
+  .goal-btn.active { border: 2px solid #F7941D; background: #FFF4E8; }
+  .goal-name { font-size: 14px; font-weight: 600; color: #0A1628; display: block; margin-bottom: 3px; }
+  .goal-sub { font-size: 11px; color: #64748B; display: block; }
+  .goal-btn.active .goal-name { color: #C45C0A; }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: #E2E8F0;
+    margin: 20px 0;
+  }
+
+  /* RESULT CARDS */
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .result-card {
+    background: #F1F5FB;
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .result-card.main {
+    background: #FFF4E8;
+    border: 1.5px solid #F7941D;
+  }
+  .result-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .result-card.main .result-label { color: #C45C0A; }
+  .result-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0A1628;
+  }
+  .result-card.main .result-value { color: #C45C0A; }
+  .result-unit { font-size: 13px; font-weight: 400; color: #64748B; margin-left: 3px; }
+
+  /* MACRO BARS */
+  .macro-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 10px 0;
+  }
+  .macro-label { font-size: 13px; color: #64748B; width: 130px; flex-shrink: 0; }
+  .macro-bar-wrap {
+    flex: 1;
+    height: 7px;
+    background: #E2E8F0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .macro-bar { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+  .macro-val { font-size: 13px; font-weight: 600; color: #0A1628; min-width: 55px; text-align: right; }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    border-left: 4px solid #F7941D;
+    background: #FFF8F0;
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+    color: #0A1628;
+    font-style: italic;
+    line-height: 1.6;
+    margin-top: 16px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: #0A1628;
+    border-top: 3px solid #F7941D;
+    padding: 20px 32px;
+    text-align: center;
+  }
+  footer p {
+    font-size: 12px;
+    color: #64748B;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  footer strong { color: #F7941D; }
+
+  /* RESPONSIVE */
+  @media (max-width: 560px) {
+    main { padding: 20px 16px 48px; }
+    .header-inner { padding: 20px 16px 18px; }
+    .field-grid, .field-grid-3, .result-grid { grid-template-columns: 1fr; }
+    .act-grid { grid-template-columns: repeat(5, 1fr); }
+    .act-btn { padding: 8px 2px 6px; }
+    .act-num { font-size: 15px; }
+    .act-label { font-size: 9px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <p class="header-eyebrow">Leau Fit en Food &nbsp;·&nbsp; Tool</p>
+    <h1 class="header-title">Caloriebehoefte Calculator</h1>
+    <p class="header-sub">Bereken jouw dagelijkse kcal-behoefte, TDEE en macroverdeling</p>
+  </div>
+</header>
+
+<main>
+
+  <!-- GEGEVENS -->
+  <div class="section-header">Jouw gegevens</div>
+  <div class="card">
+    <div class="field-grid">
+      <div class="field">
+        <label>Gewicht (kg)</label>
+        <input type="number" id="gewicht" value="80" min="40" max="200" step="0.5" oninput="calc()">
+      </div>
+      <div class="field">
+        <label>Lengte (cm)</label>
+        <input type="number" id="lengte" value="180" min="140" max="220" oninput="calc()">
+      </div>
+    </div>
+    <div class="field-grid">
+      <div class="field">
+        <label>Leeftijd (jaar)</label>
+        <input type="number" id="leeftijd" value="30" min="16" max="80" oninput="calc()">
+      </div>
+      <div class="field">
+        <label>Geslacht</label>
+        <select id="geslacht" onchange="calc()">
+          <option value="man">Man</option>
+          <option value="vrouw">Vrouw</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITEIT -->
+  <div class="section-header">Activiteitsniveau</div>
+  <div class="card">
+    <div class="act-grid">
+      <button class="act-btn" onclick="setAct(this,1.2,'Zittend werk, nauwelijks beweging buiten training.')">
+        <span class="act-num">1</span><span class="act-label">Sedentair</span>
+      </button>
+      <button class="act-btn active" onclick="setAct(this,1.375,'1–3 keer per week licht sporten of wandelen.')">
+        <span class="act-num">2</span><span class="act-label">Licht actief</span>
+      </button>
+      <button class="act-btn" onclick="setAct(this,1.55,'3–5 keer per week matig intensief trainen.')">
+        <span class="act-num">3</span><span class="act-label">Matig actief</span>
+      </button>
+      <button class="act-btn" onclick="setAct(this,1.725,'6–7 keer per week zwaar trainen of fysiek werk.')">
+        <span class="act-num">4</span><span class="act-label">Zwaar actief</span>
+      </button>
+      <button class="act-btn" onclick="setAct(this,1.9,'Topsport of lichamelijk zeer zwaar werk, dagelijks.')">
+        <span class="act-num">5</span><span class="act-label">Zeer zwaar</span>
+      </button>
+    </div>
+    <p class="act-desc" id="act-desc">1–3 keer per week licht sporten of wandelen.</p>
+  </div>
+
+  <!-- DOEL -->
+  <div class="section-header">Doel</div>
+  <div class="card">
+    <div class="goal-grid">
+      <button class="goal-btn" onclick="setGoal(this,-400)">
+        <span class="goal-name">Afvallen</span>
+        <span class="goal-sub">−400 kcal per dag</span>
+      </button>
+      <button class="goal-btn active" onclick="setGoal(this,0)">
+        <span class="goal-name">Onderhoud</span>
+        <span class="goal-sub">Gewicht behouden</span>
+      </button>
+      <button class="goal-btn" onclick="setGoal(this,300)">
+        <span class="goal-name">Spieropbouw</span>
+        <span class="goal-sub">+300 kcal per dag</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- RESULTAAT -->
+  <div class="section-header">Resultaat</div>
+  <div class="card">
+    <div class="result-grid">
+      <div class="result-card main">
+        <div class="result-label">Dagelijkse kcal-behoefte</div>
+        <div class="result-value" id="r-doel">—<span class="result-unit">kcal</span></div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">TDEE (onderhoud)</div>
+        <div class="result-value" id="r-tdee">—<span class="result-unit">kcal</span></div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">BMR (basaalmetabolisme)</div>
+        <div class="result-value" id="r-bmr">—<span class="result-unit">kcal</span></div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Activiteitsfactor</div>
+        <div class="result-value" id="r-af">—</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <p style="font-size:12px;font-weight:600;color:#64748B;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;">Macroverdeling</p>
+
+    <div class="macro-row">
+      <span class="macro-label">Eiwitten (min)</span>
+      <div class="macro-bar-wrap"><div class="macro-bar" id="bar-ei1" style="background:#F7941D;width:0%"></div></div>
+      <span class="macro-val" id="m-ei1">— g</span>
+    </div>
+    <div class="macro-row">
+      <span class="macro-label">Eiwitten (max)</span>
+      <div class="macro-bar-wrap"><div class="macro-bar" id="bar-ei2" style="background:#C45C0A;width:0%"></div></div>
+      <span class="macro-val" id="m-ei2">— g</span>
+    </div>
+    <div class="macro-row">
+      <span class="macro-label">Vet (30%)</span>
+      <div class="macro-bar-wrap"><div class="macro-bar" id="bar-vet" style="background:#1565C0;width:0%"></div></div>
+      <span class="macro-val" id="m-vet">— g</span>
+    </div>
+    <div class="macro-row">
+      <span class="macro-label">Koolhydraten</span>
+      <div class="macro-bar-wrap"><div class="macro-bar" id="bar-kh" style="background:#2E7D32;width:0%"></div></div>
+      <span class="macro-val" id="m-kh">— g</span>
+    </div>
+
+    <div class="highlight-box">
+      Eiwitten: 1,6 g/kg (min) tot 2,0 g/kg (max) lichaamsgewicht &nbsp;·&nbsp;
+      Vet: 30% van dagelijkse kcal &nbsp;·&nbsp;
+      Koolhydraten: resterende kcal na eiwit en vet.<br>
+      Berekening via Mifflin-St Jeor formule. Gebruik als richtlijn — niet als medisch advies.
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p><strong>Leau Fit en Food</strong> &nbsp;·&nbsp; Jouw coaching, jouw tempo &nbsp;·&nbsp; leaufitenfood.nl<br>
+  Dit is een indicatie op basis van de Mifflin-St Jeor formule. Raadpleeg bij twijfel altijd een arts of diëtist.</p>
+</footer>
+
+<script>
+let actFactor = 1.375;
+let goalAdj = 0;
+
+function setAct(el, val, desc) {
+  document.querySelectorAll('.act-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  actFactor = val;
+  document.getElementById('act-desc').textContent = desc;
+  calc();
+}
+
+function setGoal(el, val) {
+  document.querySelectorAll('.goal-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  goalAdj = val;
+  calc();
+}
+
+function calc() {
+  const gew = parseFloat(document.getElementById('gewicht').value) || 0;
+  const len = parseFloat(document.getElementById('lengte').value) || 0;
+  const lee = parseFloat(document.getElementById('leeftijd').value) || 0;
+  const sex = document.getElementById('geslacht').value;
+
+  if (!gew || !len || !lee) return;
+
+  const bmr = sex === 'man'
+    ? 10 * gew + 6.25 * len - 5 * lee + 5
+    : 10 * gew + 6.25 * len - 5 * lee - 161;
+
+  const tdee = Math.round(bmr * actFactor);
+  const doel = Math.round(tdee + goalAdj);
+  const eiMin = Math.round(gew * 1.6);
+  const eiMax = Math.round(gew * 2.0);
+  const vetG  = Math.round(doel * 0.30 / 9);
+  const khG   = Math.max(0, Math.round((doel - eiMin * 4 - doel * 0.30) / 4));
+
+  document.getElementById('r-bmr').innerHTML  = Math.round(bmr) + '<span class="result-unit">kcal</span>';
+  document.getElementById('r-tdee').innerHTML = tdee + '<span class="result-unit">kcal</span>';
+  document.getElementById('r-doel').innerHTML = doel + '<span class="result-unit">kcal</span>';
+  document.getElementById('r-af').textContent = actFactor.toFixed(3);
+
+  document.getElementById('m-ei1').textContent = eiMin + ' g';
+  document.getElementById('m-ei2').textContent = eiMax + ' g';
+  document.getElementById('m-vet').textContent  = vetG  + ' g';
+  document.getElementById('m-kh').textContent   = khG   + ' g';
+
+  const maxG = Math.max(eiMax, vetG, khG, 1);
+  document.getElementById('bar-ei1').style.width = Math.round(eiMin / maxG * 100) + '%';
+  document.getElementById('bar-ei2').style.width = Math.round(eiMax / maxG * 100) + '%';
+  document.getElementById('bar-vet').style.width  = Math.round(vetG  / maxG * 100) + '%';
+  document.getElementById('bar-kh').style.width   = Math.round(khG   / maxG * 100) + '%';
+}
+
+calc();
+</script>
+</body>
+</html>
