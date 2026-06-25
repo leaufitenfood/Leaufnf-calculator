@@ -1,2 +1,2 @@
 # Leaufnf-calculator
-Help je duidelijk maken waar je caloriebehoefte ongeveer ligt
+Maakt duidelijk waar je caloriebehoefte ongeveer ligt
